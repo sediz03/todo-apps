@@ -1,0 +1,6 @@
+
+
+React.js(state)
+-> Redux
+-> React Query
++ Typescript
