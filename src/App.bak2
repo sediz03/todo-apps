@@ -1,0 +1,169 @@
+import React, { useEffect, useState } from "react";
+import uuid from "react-uuid";
+
+function App() {
+  const [title, setTitle] = useState("");
+  const [contents, setContents] = useState("");
+  const [isDone, setIsDone] = useState(false);
+  const [todos, setTodos] = useState([
+    {
+      id: uuid(),
+      title: "1 할일",
+      contents: "1 내용",
+      isDone: false,
+    },
+    {
+      id: uuid(),
+      title: "2 할일",
+      contents: "2 내용",
+      isDone: false,
+    },
+    {
+      id: uuid(),
+      title: "3 할일",
+      contents: "3 내용",
+      isDone: false,
+    },
+  ]);
+
+  //의존성 배열 dependency arrays
+  useEffect(() => {
+    console.log("title", title);
+    console.log("contents", contents);
+  }, [title, contents]);
+
+  return (
+    <>
+      <div>
+        제목
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+        />
+        <br />
+        내용
+        <input
+          type="text"
+          value={contents}
+          onChange={(e) => {
+            setContents(e.target.value);
+          }}
+        />
+        <br />
+        <button
+          onClick={() => {
+            setTodos([
+              ...todos,
+              {
+                id: uuid(),
+                title,
+                contents,
+                isDone: false,
+              },
+            ]); //펼쳤다가 다시 배열에다가 추가한다.
+            setTitle("");
+            setContents("");
+          }}
+        >
+          저장
+        </button>
+        <hr />
+      </div>
+      <div>
+        <h5>해야할일</h5>
+        {todos
+          .filter((item) => {
+            return !item.isDone;
+          })
+          .map((item) => {
+            return (
+              <div key={item.id}>
+                <span>제목 : </span>
+                <span>{item.title}</span>
+                <br />
+                <span>내용 : </span>
+                <span>{item.contents}</span>
+                <br />
+                <button
+                  onClick={() => {
+                    const newTodos = todos.map((item2, index) => {
+                      console.log("index: ", index);
+                      if (item2.id === item.id) {
+                        return { ...item2, isDone: true };
+                      } else {
+                        return item2;
+                      }
+                    });
+                    setTodos(newTodos);
+                    // setTodos([...todos, { ...item, isDone: true }]);
+                  }}
+                >
+                  완료
+                </button>
+                <button
+                  onClick={() => {
+                    const newTodos = todos.filter((item2) => {
+                      return item2.id !== item.id;
+                    });
+                    setTodos(newTodos);
+                  }}
+                >
+                  삭제
+                </button>
+                <hr />
+              </div>
+            );
+          })}
+      </div>
+      <h5>완료한일</h5>
+      {todos
+        .filter((item) => {
+          return item.isDone;
+        })
+        .map((item) => {
+          return (
+            <div key={item.id}>
+              <span>제목 : </span>
+              <span>{item.title}</span>
+              <br />
+              <span>내용 : </span>
+              <span>{item.contents}</span>
+              <br />
+              <button
+                onClick={() => {
+                  setTodos(
+                    todos.map((item2, index) => {
+                      if (item2.id === item.id) {
+                        return { ...item2, isDone: false };
+                      } else {
+                        return item2;
+                      }
+                    })
+                  );
+                }}
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  setTodos(
+                    todos.filter((item) => {
+                      return item.id !== item.id;
+                    })
+                  );
+                }}
+              >
+                삭제
+              </button>
+              <hr />
+            </div>
+          );
+        })}
+    </>
+  );
+}
+
+export default App;

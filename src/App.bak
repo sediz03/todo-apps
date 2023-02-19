@@ -1,0 +1,126 @@
+import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+function App() {
+  const [title, setTitle] = useState("");
+  const [contents, setContents] = useState("");
+
+  useEffect(() => {
+    console.log("title", title);
+    console.log("contents", contents);
+  }, [title, contents]);
+
+  const onDeleteButtonClickHandler = (id) => {
+    const newTodos = todos.filter((ditem) => {
+      return ditem.id !== id;
+    });
+    setTodos(newTodos);
+  };
+
+  const [todos, setTodos] = useState([
+    {
+      id: uuidv4(),
+      title: "첫번째할일",
+      contents: "첫번째",
+      isDone: true,
+    },
+    {
+      id: uuidv4(),
+      title: "두번째할일",
+      contents: "두번째",
+      isDone: false,
+    },
+    {
+      id: uuidv4(),
+      title: "세번째할일",
+      contents: "세번째",
+      isDone: false,
+    },
+  ]);
+
+  return (
+    <>
+      <div>
+        제목
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+        />
+        <br />
+        내용
+        <input
+          type="text"
+          value={contents}
+          onChange={(e) => {
+            setContents(e.target.value);
+          }}
+        />
+        <br />
+        <button
+          onClick={() => {
+            const newTodo = {
+              id: uuidv4(),
+              title,
+              contents,
+              isDone: false,
+            };
+
+            setTodos([...todos, newTodo]);
+          }}
+        >
+          저장
+        </button>
+      </div>
+      <hr />
+      <div>
+        <h3>완료한 일</h3>
+        {todos
+          .filter((item) => {
+            return item.isDone;
+          })
+          .map((item) => {
+            return (
+              <div key={item.id}>
+                <h5>{item.title}</h5>
+                <span>{item.contents}</span>
+                <br />
+                <span>{item.isDone ? "완료" : "미완료"}</span>
+                <br />
+                <button onClick={() => onDeleteButtonClickHandler(item.id)}>
+                  삭제
+                </button>
+                <hr />
+              </div>
+            );
+          })}
+      </div>
+      <div>
+        <h3>해야할 일</h3>
+        {todos
+          .filter((item) => {
+            return !item.isDone;
+          })
+          .map((item) => {
+            return (
+              <div key={item.id}>
+                <h5>{item.title}</h5>
+                <span>{item.contents}</span>
+                <br />
+                <span>{item.isDone ? "완료" : "미완료"}</span>
+                <br />
+                <button onClick={() => onDeleteButtonClickHandler(item.id)}>
+                  삭제
+                </button>
+                <hr />
+              </div>
+            );
+          })}
+      </div>
+    </>
+  );
+}
+
+export default App;

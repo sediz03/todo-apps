@@ -1,0 +1,169 @@
+import React, { useEffect, useState } from "react";
+import uuid from "react-uuid";
+
+function App() {
+  const [title, setTitle] = useState("");
+  const [contents, setContents] = useState("");
+  const [todos, setTodos] = useState([
+    {
+      id: uuid(),
+      title: "1번제목",
+      contents: "1번내용",
+      isDone: false,
+    },
+    {
+      id: uuid(),
+      title: "2번제목",
+      contents: "2번내용",
+      isDone: false,
+    },
+    {
+      id: uuid(),
+      title: "3번제목",
+      contents: "3번내용",
+      isDone: false,
+    },
+  ]);
+
+  useEffect(() => {
+    console.log("title", title);
+    console.log("contents", contents);
+    // console.log("todos", todos);
+  }, [title, contents]);
+
+  return (
+    <>
+      <div>
+        <span>
+          제목
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+        </span>
+        <br />
+        <span>
+          내용
+          <input
+            type="text"
+            value={contents}
+            onChange={(e) => {
+              setContents(e.target.value);
+            }}
+          />
+        </span>
+        <br />
+        <button
+          onClick={() => {
+            setTodos(...todos, {
+              id: uuid(),
+              title,
+              contents,
+              isDone: false,
+            });
+          }}
+        >
+          저장
+        </button>
+        <hr></hr>
+      </div>
+      <div>
+        <h3>해야할 일</h3>
+        <br />
+        {todos
+          .filter((fItem) => {
+            return !fItem.isDone;
+          })
+          .map((mItem) => {
+            return (
+              <div key={mItem.id}>
+                <span>제목 : </span>
+                {mItem.title}
+                <br />
+                <span>내용 : </span>
+                {mItem.contents}
+                <br />
+                <button
+                  onClick={() => {
+                    const newTodos = todos.map((doneItem) => {
+                      if (doneItem.id === mItem.id) {
+                        return { ...doneItem, isDone: true };
+                      } else {
+                        return doneItem;
+                      }
+                    });
+                    setTodos(newTodos);
+                  }}
+                >
+                  완료
+                </button>
+                <button
+                  onClick={() => {
+                    setTodos(
+                      todos.filter((item) => {
+                        return mItem.id !== item.id;
+                      })
+                    );
+                  }}
+                >
+                  삭제
+                </button>
+                <hr></hr>
+              </div>
+            );
+          })}
+      </div>
+      <div>
+        <h3>완료한 일</h3>
+        {todos
+          .filter((fItem) => {
+            return fItem.isDone;
+          })
+          .map((mItem) => {
+            return (
+              <div key={mItem.id}>
+                <span>제목:</span>
+                {mItem.title}
+                <br />
+                <span>내용:</span>
+                {mItem.contents}
+                <br />
+                <button
+                  onClick={() => {
+                    setTodos(
+                      todos.map((item) => {
+                        if (item.id === mItem.id) {
+                          return { ...item, isDone: false };
+                        } else {
+                          return item;
+                        }
+                      })
+                    );
+                  }}
+                >
+                  취소
+                </button>
+                <button
+                  onClick={() => {
+                    setTodos(
+                      todos.filter((item) => {
+                        return item.id !== mItem.id;
+                      })
+                    );
+                  }}
+                >
+                  삭제
+                </button>
+                <hr></hr>
+              </div>
+            );
+          })}
+      </div>
+    </>
+  );
+}
+
+export default App;
